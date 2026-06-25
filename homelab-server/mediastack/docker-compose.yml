@@ -1,0 +1,131 @@
+services:
+
+  # ─────────────────────────────────────────
+  # PROWLARR — Indexer Manager
+  # ─────────────────────────────────────────
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./config/prowlarr:/config
+    ports:
+      - "9696:9696"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # RADARR — Movie Automation
+  # ─────────────────────────────────────────
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./config/radarr:/config
+      - /mnt/media/movies:/movies
+      - /mnt/media/downloads:/downloads
+    ports:
+      - "7878:7878"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # SONARR — TV Show Automation
+  # ─────────────────────────────────────────
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./config/sonarr:/config
+      - /mnt/media/tv:/tv
+      - /mnt/media/downloads:/downloads
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # QBITTORRENT — Download Client
+  # ─────────────────────────────────────────
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-UTC}
+      - WEBUI_PORT=8080
+    volumes:
+      - ./config/qbittorrent:/config
+      - /mnt/media/downloads:/downloads
+    ports:
+      - "8080:8080"
+      - "6881:6881"
+      - "6881:6881/udp"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # JELLYSEERR — Media Request Frontend
+  # DNS block is required — without it, Jellyseerr
+  # throws EAI_AGAIN errors when resolving external
+  # hosts (e.g., TMDb API, Jellyfin). Docker containers
+  # do not always inherit the host's DNS resolver.
+  # ─────────────────────────────────────────
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=${TZ:-UTC}
+    dns:
+      - 8.8.8.8
+      - 1.1.1.1
+    volumes:
+      - ./config/jellyseerr:/app/config
+    ports:
+      - "5055:5055"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # BAZARR — Subtitle Management
+  # ─────────────────────────────────────────
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-UTC}
+    volumes:
+      - ./config/bazarr:/config
+      - /mnt/media/movies:/movies
+      - /mnt/media/tv:/tv
+    ports:
+      - "6767:6767"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # PORTAINER — Docker Management UI
+  # ─────────────────────────────────────────
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config/portainer:/data
+    ports:
+      - "9443:9443"
+    restart: unless-stopped
+
+# NOTE: Jellyfin is NOT in this docker-compose.
+# It runs as a native systemd service for better
+# hardware transcoding support and GPU access.
+# See docs/05-jellyfin-setup.md

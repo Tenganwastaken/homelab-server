@@ -1,0 +1,16 @@
+[Unit]
+Description=SkinPeek Discord Bot (Valorant)
+After=network.target
+
+[Service]
+Type=simple
+User=<YOUR_USERNAME>
+WorkingDirectory=/home/<YOUR_USERNAME>/SkinPeek
+ExecStart=/usr/bin/node SkinPeek.js
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

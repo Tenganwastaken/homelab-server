@@ -1,0 +1,94 @@
+services:
+
+  # ─────────────────────────────────────────
+  # BESZEL HUB — Server Monitoring Dashboard
+  # Access at http://<server-ip>:8090
+  # ─────────────────────────────────────────
+  beszel-hub:
+    image: henrygd/beszel:latest
+    container_name: beszel-hub
+    volumes:
+      - ./config/beszel:/beszel/data
+    ports:
+      - "8090:8090"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # BESZEL AGENT — Runs on the monitored host
+  # MUST use network_mode: host so it can read
+  # real host network stats (not container stats).
+  # The Hub connects to it at 172.17.0.1:45876
+  # (not localhost — Hub is inside Docker bridge).
+  # ─────────────────────────────────────────
+  beszel-agent:
+    image: henrygd/beszel-agent:latest
+    container_name: beszel-agent
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    environment:
+      - PORT=45876
+      - KEY=${BESZEL_KEY}
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # PROMETHEUS — Metrics Collector
+  # ─────────────────────────────────────────
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+    ports:
+      - "9090:9090"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # NODE EXPORTER — Host System Metrics
+  # ─────────────────────────────────────────
+  node-exporter:
+    image: prom/node-exporter:latest
+    container_name: node-exporter
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "9100:9100"
+    restart: unless-stopped
+
+  # ─────────────────────────────────────────
+  # GRAFANA — Metrics Visualization
+  # Access at http://<server-ip>:3000
+  # Default login: admin / admin (change on first login)
+  # ─────────────────────────────────────────
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+
+volumes:
+  prometheus-data:
+  grafana-data:

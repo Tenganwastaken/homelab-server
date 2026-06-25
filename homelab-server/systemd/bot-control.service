@@ -1,0 +1,16 @@
+[Unit]
+Description=Bot Control API (Flask)
+After=network.target
+
+[Service]
+Type=simple
+User=<YOUR_USERNAME>
+WorkingDirectory=/home/<YOUR_USERNAME>/bots/bot-control
+ExecStart=/home/<YOUR_USERNAME>/bots/bot-control/venv/bin/python app.py
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,56 @@
+# ─────────────────────────────────────────
+# Environment files (contain secrets)
+# ─────────────────────────────────────────
+.env
+*.env
+!.env.example
+
+# ─────────────────────────────────────────
+# Docker config directories (auto-created,
+# contain service state and secrets)
+# ─────────────────────────────────────────
+mediastack/config/
+monitoring/config/
+immich/config/
+homepage/config/custom.css
+homepage/config/logs/
+
+# ─────────────────────────────────────────
+# Bot persistent data files
+# (contain server-specific IDs and state)
+# ─────────────────────────────────────────
+bots/discord-bot/voice_creator.json
+bots/discord-bot/reaction_roles.json
+bots/discord-bot/verify.json
+
+# ─────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+venv/
+.venv/
+*.egg-info/
+dist/
+build/
+
+# ─────────────────────────────────────────
+# Node.js
+# ─────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# ─────────────────────────────────────────
+# Logs
+# ─────────────────────────────────────────
+*.log
+logs/
+
+# ─────────────────────────────────────────
+# OS
+# ─────────────────────────────────────────
+.DS_Store
+Thumbs.db

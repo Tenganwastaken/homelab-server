@@ -1,0 +1,112 @@
+# Homepage Dashboard — services.yaml
+# Full config docs: https://gethomepage.dev/configs/services/
+# Replace <YOUR_SERVER_IP> with your actual server IP or hostname
+# Replace API keys with your actual keys from each service's settings
+
+- Media:
+    - Jellyfin:
+        href: http://<YOUR_SERVER_IP>:8096
+        description: Media Server
+        icon: jellyfin.png
+        widget:
+          type: jellyfin
+          url: http://<YOUR_SERVER_IP>:8096
+          key: <JELLYFIN_API_KEY>
+
+    - Jellyseerr:
+        href: http://<YOUR_SERVER_IP>:5055
+        description: Media Requests
+        icon: jellyseerr.png
+        widget:
+          type: jellyseerr
+          url: http://<YOUR_SERVER_IP>:5055
+          key: <JELLYSEERR_API_KEY>
+
+    - Radarr:
+        href: http://<YOUR_SERVER_IP>:7878
+        description: Movie Automation
+        icon: radarr.png
+        widget:
+          type: radarr
+          url: http://<YOUR_SERVER_IP>:7878
+          key: <RADARR_API_KEY>
+
+    - Sonarr:
+        href: http://<YOUR_SERVER_IP>:8989
+        description: TV Show Automation
+        icon: sonarr.png
+        widget:
+          type: sonarr
+          url: http://<YOUR_SERVER_IP>:8989
+          key: <SONARR_API_KEY>
+
+    - Prowlarr:
+        href: http://<YOUR_SERVER_IP>:9696
+        description: Indexer Manager
+        icon: prowlarr.png
+        widget:
+          type: prowlarr
+          url: http://<YOUR_SERVER_IP>:9696
+          key: <PROWLARR_API_KEY>
+
+    - qBittorrent:
+        href: http://<YOUR_SERVER_IP>:8080
+        description: Download Client
+        icon: qbittorrent.png
+        widget:
+          type: qbittorrent
+          url: http://<YOUR_SERVER_IP>:8080
+          username: admin
+          password: <QBITTORRENT_PASSWORD>
+
+    - Bazarr:
+        href: http://<YOUR_SERVER_IP>:6767
+        description: Subtitles
+        icon: bazarr.png
+        widget:
+          type: bazarr
+          url: http://<YOUR_SERVER_IP>:6767
+          key: <BAZARR_API_KEY>
+
+- Photos:
+    - Immich:
+        href: http://<YOUR_SERVER_IP>:2283
+        description: Photo Library
+        icon: immich.png
+        widget:
+          type: immich
+          url: http://<YOUR_SERVER_IP>:2283
+          key: <IMMICH_API_KEY>
+
+- Monitoring:
+    - Grafana:
+        href: http://<YOUR_SERVER_IP>:3000
+        description: Metrics Dashboards
+        icon: grafana.png
+
+    - Beszel:
+        href: http://<YOUR_SERVER_IP>:8090
+        description: Server Monitor
+        icon: beszel.png
+
+    - Prometheus:
+        href: http://<YOUR_SERVER_IP>:9090
+        description: Metrics Collector
+        icon: prometheus.png
+
+- System:
+    - Portainer:
+        href: https://<YOUR_SERVER_IP>:9443
+        description: Docker Management
+        icon: portainer.png
+
+    - Cockpit:
+        href: https://<YOUR_SERVER_IP>:9090
+        description: System Management
+        icon: cockpit.png
+
+- AI:
+    - Open WebUI:
+        href: http://<YOUR_SERVER_IP>:3001
+        description: Local AI (Llama)
+        icon: ollama.png
